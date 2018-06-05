@@ -1,0 +1,325 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <title>重庆众推网络科技有限公司</title>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak='iiyzjFAy8pzb5hmWiAGsQOXGg4Ww2egm'"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?key=&v=1.1&services=true"></script>
+    <link rel="stylesheet" href="~/Content/css/bootstrap.min.css">
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <link rel="stylesheet" href="~/Content/css/concatus.css">
+    <link rel="stylesheet" href="~/Content/css/responsive.css">
+    <!-- <link rel="stylesheet" href="css/font-icon.css"> -->
+    @*<link rel="stylesheet" href="~/Content/css/animate.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">*@
+
+
+    <!-- 引用百度地图api -->
+    <style type="text/css">
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .iw_poi_title {
+            color: #CC5522;
+            font-size: 14px;
+            font-weight: bold;
+            overflow: hidden;
+            padding-right: 13px;
+            white-space: nowrap;
+        }
+
+        .iw_poi_content {
+            font: 12px arial,sans-serif;
+            overflow: visible;
+            padding-top: 4px;
+            white-space: -moz-pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+    @*<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=iiyzjFAy8pzb5hmWiAGsQOXGg4Ww2egm"></script>*@
+  
+</head>
+<body>
+    <!-- header section -->
+    <section class="banner" role="banner">
+        <header id="header">
+            <div class="header-content clearfix">
+                <a class="logo" href="index.html">众推网络</a>
+                <nav class="navigation" role="navigation">
+                    <ul class="primary-nav">
+                        <li><a href="/Enterprise/Index">首页</a></li>
+                        <li><a href="/Enterprise/service">业务范围</a></li>
+                        <li><a href="/Enterprise/Case">经典案例</a></li>
+                        <li><a href="/Enterprise/About">关于我们</a></li>
+                        <li><a href="/Enterprise/ConcatUs">联系我们</a></li>
+                        <li><a href="#contact">留言板</a></li>
+                    </ul>
+                </nav>
+                <a href="#" class="nav-toggle">Menu<span></span></a>
+            </div>
+        </header>
+        <!-- banner text -->
+        <div class="container" style="font-family:'微软雅黑';font-style:oblique">
+            <div class="col-md-10 col-md-offset-1">
+                <div class="banner-text text-center">
+                    <h1>专注深耕精细化移动推广服务</h1>
+                    <p>
+                        移动互联网时代的创意革命 · 专业的效果垂直推广<br />
+                        流量变现 · 高效的广告收益选择
+                    </p>
+                    <!-- <a href="#" class="btn btn-large">Find out more</a> </div> -->
+                    <!-- banner text -->
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- header section -->
+    <!-- map section-->
+    <section id="baidumap" class="section">
+        <div class="container">
+            <!-- <div class="row"> -->
+            <!-- <div class="col-md-8 col-md-offset-2 conForm"> -->
+            <!--百度地图容器-->
+            <div style="width:60%;height:350px;border:#ccc solid 1px;float:left;" id="dituContent"></div>
+            <div style="width:40%;height:350px;float:left;text-align:center;">
+                <h3 class="featurette-heading">重庆众推网络科技有限公司</h3>
+                <p>地址：重庆市大学城</p>
+                <p>邮编：100086</p>
+                <p>电话：010-88889461</p>
+                <p>Email: <a href="mailto:azenui@sina.com">azenui@sina.com</a> </p>
+            </div>
+            <!-- </div>                         -->
+            <!-- </div> -->
+        </div>
+    </section>
+    <!-- map section-->
+    <!-- contact section -->
+    <section id="contact" class="section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 col-md-offset-2 conForm">
+                    <h5>留言板</h5>
+                    <p>我们很高兴您携带我们公司业务范围内的项目前来交谈，或者为那些想了解我们公司实力，合作方式的人详细商洽。</p>
+                    <div id="message"></div>
+                    <form method="post" action="" name="cform" id="cform">
+                        <input name="name" id="name" type="text" class="col-xs-12 col-sm-12 col-md-12 col-lg-12" placeholder="姓名...">
+                        <input name="phone" id="phone" type="text" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 noMarr" placeholder="电话...">
+                        <textarea name="comments" id="comments" class="col-xs-12 col-sm-12 col-md-12 col-lg-12" placeholder="留言..."></textarea>
+                        <div style="background-color:white;height:53px" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <div style="width:70%;float:left;">
+                                <input style="width:100%;height:54px;" type="text" placeholder="验证码..." name="verifyCode" required>
+                            </div>
+                            <div style="width:30%;float:right;height:53px;text-align:center;">
+                                <img src="../../Verifycode/UserInfoVerifyCode.aspx" alt="" id="verifycode" />
+                                <a href="javascript:" onclick="getverifycode()" style="text-decoration: none">看不清,换一张</a>
+                            </div>
+                        </div>
+                        <input type="button" id="submit" name="send" onclick="submitmessage();" class="submitBnt" value="提交留言">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- contact section -->
+    <!-- Footer section -->
+    <footer class="footer">
+        <div class="footer-top sections">
+            <div class="foottop">
+                <p>
+                    友情链接：
+                    <a href="#">东南财经网</a>|
+                    <a href="#">百度</a>|
+                    <a href="#"> 徽商网 </a>
+                </p>
+            </div>
+            <div class="footer-col col-md-6">
+                <h5>地址</h5>
+                <p>
+                    重庆市大学城<br>
+                    1800 1234 56789 / 98532100987<br>
+                    support@lexis.com
+                </p>
+                <p>
+                    重庆众推网络科技有限公司网站   版权所有   免责声明   渝 备  号
+                </p>
+            </div>
+            <div class="footer-col col-md-3">
+                <h5>服务范围</h5>
+                <p>
+                    <ul>
+                        <li><a href="/Enterprise/service#case1">APP推广</a></li>
+                        <li><a href="/Enterprise/service#case2">证券交所银行开户</a></li>
+                        <li><a href="/Enterprise/service#case3">P2P理财平台推广</a></li>
+                        <li><a href="/Enterprise/service#case4">电商平台推广</a></li>
+                        <li><a href="/Enterprise/service#case5">游戏测试推广</a></li>
+                        <li><a href="/Enterprise/service#case6">微信公众号推广</a></li>
+                        <li><a href="/Enterprise/service#case7">电话回访</a></li>
+                    </ul>
+                </p>
+            </div>
+            <div class="footer-col col-md-3">
+                <h5>重庆众推</h5>
+                <p>
+                    <ul>
+                        <li><a href="/Enterprise/Index">首页</a></li>
+                        <li><a href="/Enterprise/service">业务范围</a></li>
+                        <li><a href="/Enterprise/Case">经典案例</a></li>
+                        <li><a href="/Enterprise/About">关于我们</a></li>
+                        <li><a href="#contact">联系我们</a></li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+        <!-- footer top -->
+
+    </footer>
+    <!-- Footer section -->
+
+    @*<script src="js/stickUp.js" type="text/javascript"></script>*@
+
+    <!-- map -->
+    <script type="text/javascript">
+    //创建和初始化地图函数：
+    function initMap(){
+        createMap();//创建地图
+        setMapEvent();//设置地图事件
+        addMapControl();//向地图添加控件
+        addMarker();//向地图中添加marker
+    }
+
+    //创建地图函数：
+    function createMap(){
+        var a=window.BMap;
+        console.log(window);
+        var map = new window.BMap.Map("dituContent");//在百度地图容器中创建一个地图
+        var point = new BMap.Point(106.308738,29.609768);//定义一个中心点坐标
+        map.centerAndZoom(point,11);//设定地图的中心点和坐标并将地图显示在地图容器中
+        window.map = map;//将map变量存储在全局
+    }
+
+    //地图事件设置函数：
+    function setMapEvent(){
+        map.enableDragging();//启用地图拖拽事件，默认启用(可不写)
+        map.enableScrollWheelZoom();//启用地图滚轮放大缩小
+        map.enableDoubleClickZoom();//启用鼠标双击放大，默认启用(可不写)
+        map.enableKeyboard();//启用键盘上下左右键移动地图
+    }
+
+    //地图控件添加函数：
+    function addMapControl(){
+    }
+
+    //标注点数组
+    var markerArr = [{title:"重庆众推网络科技有限公司",content:"地址：重庆市大学城",point:"106.308738|29.609768",isOpen:1,icon:{w:21,h:21,l:0,t:0,x:6,lb:5}}
+    ];
+    //创建marker
+    function addMarker(){
+        for(var i=0;i<markerArr.length;i++){
+            var json = markerArr[i];
+            var p0 = json.point.split("|")[0];
+            var p1 = json.point.split("|")[1];
+            var point = new BMap.Point(p0,p1);
+            var iconImg = createIcon(json.icon);
+            var marker = new BMap.Marker(point,{icon:iconImg});
+            var iw = createInfoWindow(i);
+            var label = new BMap.Label(json.title,{"offset":new BMap.Size(json.icon.lb-json.icon.x+10,-20)});
+            marker.setLabel(label);
+            map.addOverlay(marker);
+            label.setStyle({
+                borderColor:"#808080",
+                color:"#333",
+                cursor:"pointer"
+            });
+
+            (function(){
+                var index = i;
+                var _iw = createInfoWindow(i);
+                var _marker = marker;
+                _marker.addEventListener("click",function(){
+                    this.openInfoWindow(_iw);
+                });
+                _iw.addEventListener("open",function(){
+                    _marker.getLabel().hide();
+                })
+                _iw.addEventListener("close",function(){
+                    _marker.getLabel().show();
+                })
+                label.addEventListener("click",function(){
+                    _marker.openInfoWindow(_iw);
+                })
+                if(!!json.isOpen){
+                    label.hide();
+                    _marker.openInfoWindow(_iw);
+                }
+            })()
+        }
+    }
+    //创建InfoWindow
+    function createInfoWindow(i){
+        var json = markerArr[i];
+        var iw = new BMap.InfoWindow("<b class='iw_poi_title' title='" + json.title + "'>" + json.title + "</b><div class='iw_poi_content'>"+json.content+"</div>");
+        return iw;
+    }
+    //创建一个Icon
+    function createIcon(json){
+        //var icon = new BMap.Icon("http://app.baidu.com/map/images/us_mk_icon.png", new BMap.Size(json.w,json.h),{imageOffset: new BMap.Size(-json.l,-json.t),infoWindowOffset:new BMap.Size(json.lb+5,1),offset:new BMap.Size(json.x,json.h)})
+        var icon = new BMap.Icon(
+'http://webmap0.map.bdstatic.com/wolfman/static/common/images/us_cursor_9517a2b.png', // 百度图片
+new BMap.Size(10,22), // 视窗大小
+{
+    imageSize: new BMap.Size(144,92), // 引用图片实际大小
+    imageOffset:new BMap.Size(-10,0)  // 图片相对视窗的偏移
+}
+);
+        return icon;
+    }
+
+    initMap();//创建和初始化地图   
+
+
+
+    //留言
+    function submitmessage() {
+        var messageId = @ViewBag.Id;
+        var data = {};
+        var uname = $.trim($("#name").val());
+        var uphone = $.trim($("#phone").val());
+        var umessage = $.trim($("#comments").val());
+        data = { Id:messageId,HtmlPage: "关于我们", Mobile: uphone, Nick: uname, MessageContent: umessage };
+        $.ajax({
+            type: 'post',
+            url: "../Enterprise/AddMessage",
+            data: data,
+            success: function (result) {
+                if (result.ResultType == 0) {
+                    layer.msg('添加成功!', { icon: 1, time: 3000 });
+                    var index = parent.layer.getFrameIndex(window.name);
+                    parent.$('.btn-refresh').click();
+                    parent.layer.close(index);
+                }
+                else
+                    layer.msg(result.Msg, { icon: 5, time: 3000 });
+            },
+            error: function (XmlHttpRequest, textStatus, errorThrown) {
+                layer.msg('error!', { icon: 1, time: 3000 });
+            }
+        });
+    }
+        //重新取得验证码
+        function getverifycode() {
+            var vimg = $("#verifycode");
+            $(vimg).attr("src", "../Verifycode/UserInfoVerifyCode.aspx?" + Math.random());
+        };
+    </script>
+</body>
+</html>

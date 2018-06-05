@@ -1,0 +1,49 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>InfoPreview</title>
+</head>
+<body>
+    <div> 
+        <article>
+            @*<div class="title" style="margin:0 auto;width:100%;"></div>*@
+            <div class="content"></div>
+        </article>
+    </div>
+</body>
+</html>
+<script type="text/javascript" src="~/Content/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="~/Content/lib/layer/2.4/layer.js"></script>
+<script>
+    $(function () {
+        var id =@ViewBag.Id;
+        console.log(id);
+        $.ajax({
+            data: { id:id },
+            url: '../AdminInfoManage/GetInfoById',
+            type: 'GET',
+            dataType:'JSON',
+            success: function (result) {
+                console.log(result);
+                if (result.ResultType == 0) {
+                    //$(".title").html(result.DataObj.Title);
+                    var data = JSON.parse(result.DataObj);
+                    $(".content").html(data[0].Content);
+                }
+                else {
+                    layer.msg(result.Msg, { icon: 5, time: 3000 });
+                }
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        })
+    })
+    </script>

@@ -1,0 +1,203 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="Bookmark" href="/favicon.ico">
+    <link rel="Shortcut Icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width" />
+    <title>AddOrEdit</title>
+    <link rel="stylesheet" type="text/css" href="~/Content/static/h-ui/css/H-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="~/Content/static/h-ui.admin/css/H-ui.admin.css" />
+    <link rel="stylesheet" type="text/css" href="~/Content/lib/Hui-iconfont/1.0.8/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="~/Content/static/h-ui.admin/skin/default/skin.css" id="skin" />
+    <link rel="stylesheet" type="text/css" href="~/Content/static/h-ui.admin/css/style.css" />
+</head>
+<body>
+    <article class="page-container">
+        <form action="" method="post" class="form form-horizontal" id="form-member-add">
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>昵称：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" required value="" placeholder="" id="nick" name="nick">
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>手机号码：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" required value="" placeholder="" id="mobile" name="mobile">
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>所属页面：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <span class="select-box">
+                        <select name="htmlpage" id="articlecolumn" class="select selectPage">
+                            <option value="0" selected>请选择</option>
+                        </select>
+                    </span>
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>留言：</label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <textarea name="messageContent" id="messageContent" cols="" rows="" required class="textarea" placeholder="留言内容"></textarea>
+                    <p class="textarea-numberbar"><em class="textarea-length">0</em>/1000</p>
+                </div>
+            </div>
+            <div class="row cl">
+                <div class="formControls col-xs-8 col-xs-offset-3">
+                    <input class="input-text size-L" type="text" required placeholder="验证码" name="identifyingCode" required style="width:150px;">
+                    <img src="../../Verifycode/UserInfoVerifyCode.aspx" alt="" id="verifycode" /><a href="javascript:" onclick="getverifycode()" style="text-decoration: none">看不清,换一张</a>
+                </div>
+            </div>
+            <div class="row cl">
+                <div class="formControls col-xs-8 col-xs-offset-3">
+                    <input name="" type="submit" id="addMessage" class="btn btn-success radius" value="&nbsp;添&nbsp;加&nbsp;留&nbsp;言&nbsp;">
+                    <input name="" type="reset" id="" class="btn btn-default radius" value="&nbsp;取&nbsp;&nbsp;&nbsp;&nbsp;消&nbsp;">
+                    <span style="color:red;" id="msg"></span>
+                </div>
+            </div>
+        </form>
+    </article>
+    <!--_footer 作为公共模版分离出去-->
+    <script type="text/javascript" src="~/Content/lib/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="~/Content/lib/layer/2.4/layer.js"></script>
+    <script type="text/javascript" src="~/Content/static/h-ui/js/H-ui.min.js"></script>
+    <script type="text/javascript" src="~/Content/static/h-ui.admin/js/H-ui.admin.js"></script> <!--/_footer 作为公共模版分离出去-->
+    <!--请在下方写此页面业务相关的脚本-->
+    <script type="text/javascript" src="~/Content/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+    <script type="text/javascript" src="~/Content/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+    <script type="text/javascript" src="~/Content/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+    <script type="text/javascript" src="~/Content/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            //重新取得验证码
+            function getverifycode() {
+                var vimg = $("#verifycode");
+                $(vimg).attr("src", "../Verifycode/UserInfoVerifyCode.aspx?" + Math.random());
+            };
+            /**
+       * 获取页面列表
+       */
+            GetPageList();
+            function GetPageList() {
+                $.ajax({
+                    type: 'post',
+                    url: "../AdminInfoManage/GetPageList",
+                    success: function (result) {
+                        var data = result.DataObj;
+                        for (var i = 0; i < data.length; i++) {
+                            $(".selectPage").append('<option value="' + data[i].Id + '">' + data[i].PageName + '</option>');
+                        }
+                    },
+                    error: function (data) {
+                        console.log(data);
+                    },
+                })
+            }
+            var messageId = @ViewBag.Id;
+            if (messageId != 0) {
+                $.ajax({
+                    url: "../AdminMessageManage/GetMessageById",
+                    data: { Id: messageId },
+                    type: "POST",
+                    success: function (result) {
+                        if (result.ResultType == 0) {
+                            console.log(result);
+                            //给文本框赋值
+                            var data = JSON.parse(result.DataObj);
+                            $("#nick").val(data[0].Nick);
+                            $("#mobile").val(data[0].Mobile);
+                            $("#articlecolumn").val(data[0].HtmlPage.Id);
+                            $("#messageContent").val(data[0].MessageContent);
+                        }
+                        else {
+                            layer.msg(result.Msg, { icon: 5, time: 3000 });
+                        }
+                    },
+                    error: function () {
+
+                    }
+                })
+            }
+
+
+
+            $('.skin-minimal input').iCheck({
+                checkboxClass: 'icheckbox-blue',
+                radioClass: 'iradio-blue',
+                increaseArea: '20%'
+            });
+
+            $("#form-member-add").validate({
+                rules: {
+                    htmlpage: {
+                        required: true,
+                    },
+                    messageContent: {
+                        required: true,
+                        maxlength: 1000
+                    },
+                    mobile: {
+                        required: true,
+                        isPhone: true
+                    },
+                    nick: {
+                        required: true,
+                    },
+                    identifyingCode: {
+                        required: true,
+                    }
+                },
+                onkeyup: false,
+                focusCleanup: true,
+                success: "valid",
+                submitHandler: function (form) {
+                    var data = {};
+                    var a = $("#form-member-add").serializeArray();
+                    console.log(a);
+                    $.each(a, function () {
+                        if (this.name == "htmlpage") {
+                            data[this.name] = { Id: this.value };
+                        } else {
+                            data[this.name] = this.value;
+                        }
+                    })
+                    $.ajax({
+                        type: 'post',
+                        url: "../AdminMessageManage/AddMessage",
+                        data: data,
+                        success: function (result) {
+                            console.log(result);
+                            if (result.ResultType == 0) {
+                                layer.msg('添加成功!', { icon: 1, time: 3000 });
+                                var index = parent.layer.getFrameIndex(window.name);
+                                parent.$('.btn-refresh').click();
+                                parent.layer.close(index);
+                            }
+                            else
+                                layer.msg(result.Msg, { icon: 5, time: 3000 });
+                        },
+                        error: function (XmlHttpRequest, textStatus, errorThrown) {
+                            layer.msg('error!', { icon: 1, time: 3000 });
+                        }
+                    });
+                 
+                }
+            });
+        });
+    </script>
+    <!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

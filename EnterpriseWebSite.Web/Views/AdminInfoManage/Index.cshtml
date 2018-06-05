@@ -1,0 +1,175 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="lib/html5shiv.js"></script>
+    <script type="text/javascript" src="lib/respond.min.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" type="text/css" href="~/Content/static/h-ui/css/H-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="~/Content/static/h-ui.admin/css/H-ui.admin.css" />
+    <link rel="stylesheet" type="text/css" href="~/Content/lib/Hui-iconfont/1.0.8/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="~/Content/static/h-ui.admin/skin/default/skin.css" id="skin" />
+    <link rel="stylesheet" type="text/css" href="~/Content/static/h-ui.admin/css/style.css" />
+    <!--[if IE 6]>
+    <script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+    <script>DD_belatedPNG.fix('*');</script>
+    <![endif]-->
+    <title>企业信息列表</title>
+</head>
+<body>
+    <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 企业信息管理 <span class="c-gray en">&gt;</span> 企业信息列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+    <div class="page-container">
+        <div class="text-c">
+            日期范围：
+            <input type="text" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'logmax\')||\'%y-%M-%d\'}' })" id="logmin" class="input-text Wdate" style="width:120px;">
+            -
+            <input type="text" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'logmin\')}',maxDate:'%y-%M-%d' })" id="logmax" class="input-text Wdate" style="width:120px;">
+            <input type="text" name="title" id="title" placeholder=" 企业信息名称" style="width:250px" class="input-text">
+            <button name="" id="search" class="btn btn-success" type="submit"><i class="Hui-iconfont">&#xe665;</i> 搜企业信息</button>
+        </div>
+        <div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="delInfo()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> <a class="btn btn-primary radius" data-title="添加企业信息" data-href="../AdminInfoManage/AddOrEdit" onclick="Hui_admin_tab(this)" href="javascript:;"><i class="Hui-iconfont">&#xe600;</i> 添加企业信息</a></span> <span class="r" style="display:none">共有数据：<strong class="data_count"></strong> 条</span> </div>
+        <div class="mt-20">
+            <table class="table table-border table-bordered table-bg table-hover table-sort table-responsive">
+                <thead>
+                    <tr class="text-c">
+                        <th width="25"><input type="checkbox" name="" value=""></th>
+                        <th width="80">ID</th>
+                        <th>标题</th>
+                        <th width="">页面</th>
+                        <th width="80">区域</th>
+                        <th width="120">更新时间</th>
+                        <th width="120">操作</th>
+                    </tr>
+                </thead>
+                <tbody id="info_tbody"></tbody>
+            </table>
+        </div>
+    </div>
+    <!--_footer 作为公共模版分离出去-->
+    <script type="text/javascript" src="~/Content/lib/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="~/Content/lib/layer/2.4/layer.js"></script>
+    <script type="text/javascript" src="~/Content/static/h-ui/js/H-ui.min.js"></script>
+    <script type="text/javascript" src="~/Content/static/h-ui.admin/js/H-ui.admin.js"></script> <!--/_footer 作为公共模版分离出去-->
+    <!--请在下方写此页面业务相关的脚本-->
+    <script type="text/javascript" src="~/Content/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+    <script type="text/javascript" src="~/Content/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="~/Content/lib/laypage/1.2/laypage.js"></script>
+    <script type="text/javascript">
+        GetInfoList();
+        //获取表格数据
+        $("#search").click(function () {
+            GetInfoList();
+        })
+        function GetInfoList() {
+            var startDate = $.trim($("#logmin").val());
+            var endDate = $.trim($("#logmax").val());
+            var title = $.trim($("#title").val());
+            $.ajax({
+                type: "POST",
+                url: "../AdminInfoManage/GetInfoList",
+                dataType: "json",
+                data: { startDate: startDate, endDate: endDate, title: title },
+                success: function (result) {
+                    //加载数据
+                    if (result.ResultType == 0) {
+                        var data = JSON.parse(result.DataObj);
+                        $("#info_tbody").html("");
+                        var htm = '';
+                        for (var i = 0; i < data.length; i++) {
+                            var id = data[i].Id;
+                            var title = data[i].Title;
+                            var region = data[i].HtmlRegion.RegionName;
+                            var page = data[i].HtmlRegion.HtmlPage.PageName;
+                            var addname = data[i].Admin.Name;
+                            var addDate = data[i].AddDate;
+                            htm += '<tr class="text-c"><td><input type="checkbox" value="' + id + '" name="ids_check"></td><td>' + id + '</td><td class="text-l"><u style="cursor:pointer" class="text-primary" onClick="article_edit(\'查看信息\',\'InfoPreview\',\'' + id + '\')" title="查看">' + title + '</u></td><td>' + page + '</td><td>' + region + '</td><td>' + addDate + '</td>';
+                            htm += '<td class="f-14 td-manage"><a style="text-decoration:none" class="ml-5" onClick="article_edit(\'企业信息编辑\',\'AddOrEdit\',\'' + id + '\')" href="javascript:;" title="编辑"><i class="Hui-iconfont">&#xe6df;</i></a> <a style="text-decoration:none" class="ml-5" onClick="article_del(this,\'' + id + '\')" href="javascript:;" title="删除"><i class="Hui-iconfont">&#xe6e2;</i></a></td></tr>';
+                        }
+                        $("#info_tbody").append(htm);
+                    }
+                },
+                error: function (data) {
+                    console.log(data);
+                    layer.msg('请求出错，请稍候再试!', { icon: 5, time: 3000 });
+                }
+            })
+        }
+
+
+        /*企业信息-添加*/
+        function article_add(title, url, w, h) {
+            var index = layer.open({
+                type: 2,
+                title: title,
+                content: url
+            });
+            layer.full(index);
+        }
+        /*企业信息-编辑*/
+        function article_edit(title, url, id, w, h) {
+            var index = layer.open({
+                type: 2,
+                title: title,
+                content: url + '?Id=' + id
+            });
+            layer.full(index);
+        }
+        /*企业信息-删除*/
+        function article_del(obj, id) {
+            layer.confirm('确认要删除吗？', function (index) {
+                var ids = [];
+                ids.push(id);
+                DelIds(ids);
+            });
+        }
+        /**
+         * 批量删除
+         */
+        function delInfo() {
+            var ids = [];
+            $("input[name='ids_check']").each(function () {
+                if ($(this).is(":checked")) {
+                    ids.push($(this).val());
+                }
+            });
+            console.log(ids);
+            if (ids.length < 0) {
+                layer.msg('至少选择一个！', { icon: 5, time: 3000 });
+                return;
+            }
+            else {
+                layer.confirm('确认要删除吗？', function (index) {
+                    DelIds(ids);
+                });
+            }
+        }
+        function DelIds(ids) {
+            $.ajax({
+                type: 'POST',
+                url: '../AdminInfoManage/DelInfo',
+                data: { ids: ids },
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data);
+                    layer.msg('已删除!', { icon: 1, time: 300 });
+                    location.replace(location.href);
+                },
+                error: function (data) {
+                    console.log(data.msg);
+                },
+            });
+        }
+    </script>
+</body>
+</html>
