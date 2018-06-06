@@ -15,6 +15,57 @@
     <script src="~/Scripts/jquery-1.10.2.min.js"></script>
     <link rel="stylesheet" href="~/Content/css/about.css">
     <script type="text/javascript" src="~/Content/lib/layer/2.4/layer.js"></script>
+    <style>
+        @@keyframes myfirst {
+            from {
+                font-size: 36px;
+            }
+
+            to {
+                font-size: 24px;
+            }
+        }
+
+        @@-moz-keyframes myfirst /* Firefox */
+        {
+            from {
+                font-size: 36px;
+            }
+
+            to {
+                font-size: 24px;
+            }
+        }
+
+        @@-webkit-keyframes myfirst /* Safari 和 Chrome */
+        {
+            from {
+                font-size: 36px;
+            }
+
+            to {
+                font-size: 24px;
+            }
+        }
+
+        @@-o-keyframes myfirst /* Opera */
+        {
+            from {
+                font-size: 36px;
+            }
+
+            to {
+                font-size: 24px;
+            }
+        }
+
+        .logo {
+            animation: myfirst 2s;
+            -moz-animation: myfirst 2s; /* Firefox */
+            -webkit-animation: myfirst 2s; /* Safari 和 Chrome */
+            -o-animation: myfirst 2s; /* Opera */
+        }
+    </style>
 </head>
 <body>
     <!-- header section -->

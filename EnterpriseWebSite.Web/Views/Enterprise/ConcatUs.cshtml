@@ -46,6 +46,57 @@
             word-wrap: break-word;
         }
     </style>
+    <style>
+        @@keyframes myfirst {
+            from {
+                font-size: 36px;
+            }
+
+            to {
+                font-size: 24px;
+            }
+        }
+
+        @@-moz-keyframes myfirst /* Firefox */
+        {
+            from {
+                font-size: 36px;
+            }
+
+            to {
+                font-size: 24px;
+            }
+        }
+
+        @@-webkit-keyframes myfirst /* Safari 和 Chrome */
+        {
+            from {
+                font-size: 36px;
+            }
+
+            to {
+                font-size: 24px;
+            }
+        }
+
+        @@-o-keyframes myfirst /* Opera */
+        {
+            from {
+                font-size: 36px;
+            }
+
+            to {
+                font-size: 24px;
+            }
+        }
+
+        .logo {
+            animation: myfirst 2s;
+            -moz-animation: myfirst 2s; /* Firefox */
+            -webkit-animation: myfirst 2s; /* Safari 和 Chrome */
+            -o-animation: myfirst 2s; /* Opera */
+        }
+    </style>
     @*<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=iiyzjFAy8pzb5hmWiAGsQOXGg4Ww2egm"></script>*@
   
 </head>

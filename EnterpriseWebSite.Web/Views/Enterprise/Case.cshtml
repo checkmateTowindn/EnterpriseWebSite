@@ -15,9 +15,60 @@
     <link rel="stylesheet" href="~/Content/css/case.css">
     <link href="~/Content/css/style.css" rel="stylesheet" />
     <script src="~/Scripts/jquery-1.10.2.min.js"></script>
-    <script src="~/Scripts/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="~/Content/lib/layer/2.4/layer.js"></script>   
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <style>
+        @@keyframes myfirst {
+            from {
+                font-size: 36px;
+            }
 
+            to {
+                font-size: 24px;
+            }
+        }
+
+        @@-moz-keyframes myfirst /* Firefox */
+        {
+            from {
+                font-size: 36px;
+            }
+
+            to {
+                font-size: 24px;
+            }
+        }
+
+        @@-webkit-keyframes myfirst /* Safari 和 Chrome */
+        {
+            from {
+                font-size: 36px;
+            }
+
+            to {
+                font-size: 24px;
+            }
+        }
+
+        @@-o-keyframes myfirst /* Opera */
+        {
+            from {
+                font-size: 36px;
+            }
+
+            to {
+                font-size: 24px;
+            }
+        }
+
+        .logo {
+            animation: myfirst 2s;
+            -moz-animation: myfirst 2s; /* Firefox */
+            -webkit-animation: myfirst 2s; /* Safari 和 Chrome */
+            -o-animation: myfirst 2s; /* Opera */
+        }
+    </style>
 </head>
 <body>
     <!-- header section -->
@@ -219,11 +270,15 @@
     <script type="text/javascript">
 
         $(function () {
-
+            window.Data={case1:[],case2:[],case3:[],case4:[],case5:[]};
             var imageslist = {};
             var dataCount = 0;//总数据条数
             var imagearray = [];
+            imagelist("游戏类");
             imagelist("理财类");
+            imagelist("证券类");
+            imagelist("银行类");
+            imagelist("电商类");
             function imagelist(title) {
 
                 $.ajax({
@@ -236,8 +291,26 @@
                             var data=JSON.parse(imageslist);
                             imagearray = data[0].Image;
                             dataCount = imagearray.length;
+                            var titleID="case1";
+                            switch(title){
+                                case "游戏类":
+                                    titleID="case1";
+                                    break;
+                                case "理财类":
+                                    titleID="case2";
+                                    break;
+                                case "证券类":
+                                    titleID="case3";
+                                    break;
+                                case "银行类":
+                                    titleID="case4";
+                                    break;
+                                case "电商类":
+                                    titleID="case5";
+                                    break;
+                            }
 
-                            getPage(1,imagearray,dataCount);
+                            getPage(titleID,dataCount,1,imagearray);
 
                             return imagearray;
                         }
@@ -250,21 +323,29 @@
             }
                         
             //翻页
-            function getPage(pn,Data,dataCount){
+            window.getPage=function(titleID,dataCount,pn,Data){
                 //var dataCount=50;//总数据条数
+                if(dataCount==0){
+                    return;
+                }
+                if(Data==""){
+                    Data=window.Data[titleID];
+                }else{
+                    window.Data[titleID]=Data;
+                }
                 var imaurl = [];
                 for (var i = 0; i < Data.length; i++) {
                     imaurl.push(Data[i].Url);
                 }
-                var pageSize=6;//每页显示条数
-
+                var pageSize=8;//每页显示条数
+                dataCount=Data.length;
                 var pageCount= Math.ceil(dataCount / pageSize);//总页数
                 if(pn==0||pn>pageCount){
                     return;
                 }
-                var ul=$(".listul");
+                var ul=$("#"+titleID+"").next().find(".listul");
                 ul.empty();
-                paintPage(pageCount,pn);   //绘制页码
+                paintPage(titleID,pageCount,pn);   //绘制页码
                 var startPage = pageSize * (pn - 1);
                 console.log(dataCount);
                 if (pageCount == 1) {     // 当只有一页时 
@@ -285,48 +366,48 @@
 
            
             //绘制页码
-            function paintPage(number,currNum)  //number 总页数,currNum 当前页  
+            function paintPage(titleID,number,currNum)  //number 总页数,currNum 当前页  
             {
-                var pageUl=$(".fenye");
+                var pageUl=$("#"+titleID+" ").next().find(".fenye");
                 pageUl.empty();
                 var ulDetail="";
 
                 if(number==1){
                     ulDetail= "<li class=\"prev\"><a href=\"javascript:void(0)\">上一页</a></li>"+
-                    "<li class=\"numb choose\"><a href=\"javascript:getPage(1)\">1</a></li>"+
+                    "<li class=\"numb choose\"><a href=\"javascript:getPage('"+titleID+"','"+number+"',1,'')\">1</a></li>"+
                     "<li class=\"next\"><a href=\"javascript:void(0)\">下一页</a></li>";
                 }else if(number==2){
-                    ulDetail= "<li class=\"prev\"><a href=\"javascript:getPage(1)\">上一页</a></li>"+
-                    "<li class=\"numb"+choosele(currNum,1)+"\"><a href=\"javascript:getPage(1)\">1</a></li>"+
-                    "<li class=\"numb"+choosele(currNum,2)+"\"><a href=\"javascript:getPage(2)\">2</a></li>"+
-                    "<li class=\"next\"><a href=\"javascript:getPage(2)\">下一页</a></li>";
+                    ulDetail= "<li class=\"prev\"><a href=\"javascript:getPage('"+titleID+"','"+number+"',1,'')\">上一页</a></li>"+
+                    "<li class=\"numb"+choosele(currNum,1)+"\"><a href=\"javascript:getPage('"+titleID+"','"+number+"',1,'')\">1</a></li>"+
+                    "<li class=\"numb"+choosele(currNum,2)+"\"><a href=\"javascript:getPage('"+titleID+"','"+number+"',2,'')\">2</a></li>"+
+                    "<li class=\"next\"><a href=\"javascript:getPage('"+titleID+"','"+number+"',2,'')\">下一页</a></li>";
                 }else if(number==3){
-                    ulDetail= "<li class=\"prev\"><a href=\"javascript:getPage("+parseInt(currNum-1)+")\">上一页</a></li>"+
-                    "<li class=\"numb"+choosele(currNum,1)+"\"><a href=\"javascript:getPage(1)\">1</a></li>"+
-                    "<li class=\"numb"+choosele(currNum,2)+"\"><a href=\"javascript:getPage(2)\">2</a></li>"+
-                    "<li class=\"numb"+choosele(currNum,3)+"\"><a href=\"javascript:getPage(3)\">3</a></li>"+
-                    "<li class=\"next\"><a href=\"javascript:getPage("+parseInt(currNum+1)+")\">下一页</a></li>";
+                    ulDetail= "<li class=\"prev\"><a href=\"javascript:getPage('"+titleID+"','"+number+"',"+parseInt(currNum-1)+",'')\">上一页</a></li>"+
+                    "<li class=\"numb"+choosele(currNum,1)+"\"><a href=\"javascript:getPage('"+titleID+"','"+number+"',1,'')\">1</a></li>"+
+                    "<li class=\"numb"+choosele(currNum,2)+"\"><a href=\"javascript:getPage('"+titleID+"','"+number+"',2,'')\">2</a></li>"+
+                    "<li class=\"numb"+choosele(currNum,3)+"\"><a href=\"javascript:getPage('"+titleID+"','"+number+"',3,'')\">3</a></li>"+
+                    "<li class=\"next\"><a href=\"javascript:getPage('"+titleID+"','"+number+"',"+parseInt(currNum+1)+",'')\">下一页</a></li>";
                 }else if(number==currNum&&currNum>3){
-                    ulDetail= "<li class=\"prev\"><a href=\"javascript:getPage("+parseInt(currNum-1)+")\">上一页</a></li>"+
-                    "<li class=\"numb\"><a href=\"javascript:getPage("+parseInt(currNum-2)+")\">"+parseInt(currNum-2)+"</a></li>"+
-                    "<li class=\"numb\"><a href=\"javascript:getPage("+parseInt(currNum-1)+")\">"+parseInt(currNum-1)+"</a></li>"+
-                    "<li class=\"numb choose\"><a href=\"javascript:getPage("+currNum+")\">"+currNum+"</a></li>"+
-                    "<li class=\"next\"><a href=\"javascript:getPage("+currNum+")\">下一页</a></li>";
+                    ulDetail= "<li class=\"prev\"><a href=\"javascript:getPage('"+titleID+"','"+number+"',"+parseInt(currNum-1)+",'')\">上一页</a></li>"+
+                    "<li class=\"numb\"><a href=\"javascript:getPage('"+titleID+"','"+number+"',"+parseInt(currNum-2)+",'')\">"+parseInt(currNum-2)+"</a></li>"+
+                    "<li class=\"numb\"><a href=\"javascript:getPage('"+titleID+",'"+number+"'',"+parseInt(currNum-1)+",'')\">"+parseInt(currNum-1)+"</a></li>"+
+                    "<li class=\"numb choose\"><a href=\"javascript:getPage('"+titleID+"','"+number+"',"+currNum+",'')\">"+currNum+"</a></li>"+
+                    "<li class=\"next\"><a href=\"javascript:getPage('"+titleID+"','"+number+"',"+currNum+",'')\">下一页</a></li>";
                 }else if(currNum==1&&number>3){
                     ulDetail= "<li class=\"prev\"><a href=\"javascript:void(0)\">上一页</a></li>"+
                     "<li class=\"numb choose\"><a href=\"javascript:void(0)\">1</a></li>"+
-                    "<li class=\"numb\"><a href=\"javascript:getPage(2)\">2</a></li>"+
-                    "<li class=\"numb\"><a href=\"javascript:getPage(3)\">3</a></li>"+
-                    "<li class=\"next\"><a href=\"javascript:getPage(2)\">下一页</a></li>";
+                    "<li class=\"numb\"><a href=\"javascript:getPage('"+titleID+"','"+number+"',2,'')\">2</a></li>"+
+                    "<li class=\"numb\"><a href=\"javascript:getPage('"+titleID+"','"+number+"',3,'')\">3</a></li>"+
+                    "<li class=\"next\"><a href=\"javascript:getPage('"+titleID+"','"+number+"',2,'')\">下一页</a></li>";
                 }else{
-                    ulDetail= "<li class=\"prev\"><a href=\"javascript:getPage("+parseInt(currNum-1)+")\">上一页</a></li>"+
-                    "<li class=\"numb\"><a href=\"javascript:getPage("+parseInt(currNum-1)+")\">"+parseInt(currNum-1)+"</a></li>"+
-                    "<li class=\"numb choose\"><a href=\"javascript:getPage("+currNum+")\">"+currNum+"</a></li>"+
-                    "<li class=\"numb\"><a href=\"javascript:getPage("+parseInt(currNum+1)+")\">"+parseInt(currNum+1)+"</a></li>"+
-                    "<li class=\"next\"><a href=\"javascript:getPage("+parseInt(currNum+1)+")\">下一页</a></li>";
+                    ulDetail= "<li class=\"prev\"><a href=\"javascript:getPage('"+titleID+"','"+number+"',"+parseInt(currNum-1)+",'')\">上一页</a></li>"+
+                    "<li class=\"numb\"><a href=\"javascript:getPage('"+titleID+"','"+number+"',"+parseInt(currNum-1)+",'')\">"+parseInt(currNum-1)+"</a></li>"+
+                    "<li class=\"numb choose\"><a href=\"javascript:getPage('"+titleID+"','"+number+"',"+currNum+",'')\">"+currNum+"</a></li>"+
+                    "<li class=\"numb\"><a href=\"javascript:getPage('"+titleID+"','"+number+"',"+parseInt(currNum+1)+",'')\">"+parseInt(currNum+1)+"</a></li>"+
+                    "<li class=\"next\"><a href=\"javascript:getPage('"+titleID+"','"+number+"',"+parseInt(currNum+1)+",'')\">下一页</a></li>";
                 }
 
-                $(".fenye").append(ulDetail);
+                pageUl.html(ulDetail);
 
             }
 
